@@ -6,12 +6,18 @@ import crawler_conf as arg
 
 # url = base_url
 def getdata(url):
-    # 附加 Request 物件，附加Request Headers 的資訊
+    # 附加 Request 物件，附加Request Headers 的資訊 這個要看網站的狀況沒有辦法制式化
     request = req.Request(url, headers={
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36"
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        # "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        # "Accept-Encoding": "gzip, deflate, br",
+        # "Accept-Language": "zh-TW;q=0.7",
+        # "Cache-Control": "max-age=0",
+        "Cookie": "cf_clearance=F0fUeQPjzqETdCw.4F3CfdhrYWstntRR9JuJCKcp_AE-1661272157-0-150; csrftoken=GElTSfwxVI7hJwtrDoNCPT2vUNMmbQurQEVc2W4u0G22NHZcCST1VJq8gzRwwuq1; sessionid=vnp97orlcfus3m647zosjfab39kfsqay"
     })
     with req.urlopen(request) as response:
         data = response.read().decode("utf-8")
+    # data = req.urlopen(request).read().decode("utf-8")
     # print(data)
     return data
 
@@ -25,13 +31,11 @@ def getimgurl_imh(data):
 
 # 抓 nh 
 # data = getdata(base_url) # 引用getdata
-# print(data)
 def getimgurl_nh(data):
     root = bs4.BeautifulSoup(data, "html.parser")
     img_url = root.find("section",id="image-container").a.img # 找image-container
     img_url = img_url.get("src")
     return img_url
-
 
 # nh 的 img total
 # data = getdata(base_url) # 引用getdata
@@ -46,7 +50,7 @@ def getimgtotal_nh(data):
 # data = getdata(base_url) # 引用getdata
 def getimgtotal_imh(data):
     root = bs4.BeautifulSoup(data, "html.parser")
-    img_total_str = root.find("ul",class_="galleries_info").find("li",class_="pages").string # 找image-container
+    img_total_str = root.find("ul",class_="galleries_info").find("li",class_="pages").string 
     _, img_total = img_total_str.split("Pages: ")
     img_total = int(img_total)
     return img_total
@@ -55,8 +59,7 @@ def getimgtotal_imh(data):
 # 確認有無圖片資料夾與建一個
 def imgfolder(folder_,foldername):
     if os.path.exists(os.path.join(folder_,foldername)) == False:
-        folder_mkdir = os.mkdir(os.path.join(folder_,foldername))
-        folder_save = os.path.join(folder_,foldername)
+        folder_save = os.mkdir(os.path.join(folder_,foldername))
         print("This is mkdir: ",folder_save)
     else:
         folder_save = os.path.join(folder_,foldername)
